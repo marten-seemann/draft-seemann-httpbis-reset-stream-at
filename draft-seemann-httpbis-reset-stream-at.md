@@ -8,8 +8,8 @@ ipr: trust200902
 submissiontype: IETF
 consensus: true
 v: 3
-area: wit
-workgroup: httpbis
+area: "Web and Internet Transport"
+workgroup: "HTTP"
 
 
 author:
