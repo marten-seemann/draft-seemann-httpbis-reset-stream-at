@@ -8,20 +8,15 @@
 <meta content="Marten Seemann" name="author">
 <meta content="
        QUIC stream resets do not guarantee delivery of stream data sent before the
-reset.  This is a problem for HTTP/3 when the appropriate protocol outcome is an
-abrupt stream termination, but the sender also has a bounded prefix that is
-useful to deliver.  In HTTP/3, that prefix is often an HTTP response header
-block, optionally followed by a short diagnostic response body, or a partial
-response received from an upstream host. 
-       WebTransport over HTTP/3 uses RESET_STREAM_AT to ensure that stream prefix
-information is delivered when a WebTransport stream is reset.  That use case
-motivated the QUIC extension, and many HTTP/3 implementations already support
-it for that reason.  This document records additional HTTP/3 use cases for the
-same mechanism. 
-       This document describes HTTP/3 use cases for the RESET_STREAM_AT.  These include
-CONNECT tunnels, intermediary forwarding failures after a response has been
-committed, malformed decoded HTTP messages, and requests rejected before
-application processing. 
+reset.  This is a problem for HTTP/3 when the correct protocol outcome is an
+abrupt stream termination, but the sender still has a bounded prefix worth
+delivering, such as response headers, a short diagnostic response body, or a
+partial response received from an upstream host. 
+       RESET_STREAM_AT provides reliable delivery of that prefix and is already used by
+WebTransport over HTTP/3 when resetting streams.  The same mechanism also fits
+HTTP/3 CONNECT tunnels, intermediary failures after response commitment,
+malformed decoded HTTP messages, and requests rejected before application
+processing. 
     " name="description">
 <meta content="xml2rfc 3.34.0" name="generator">
 <meta content="draft-seemann-httpbis-reset-stream-at-latest" name="ietf.draft">
@@ -1092,20 +1087,15 @@ svg {
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">QUIC stream resets do not guarantee delivery of stream data sent before the
-reset.  This is a problem for HTTP/3 when the appropriate protocol outcome is an
-abrupt stream termination, but the sender also has a bounded prefix that is
-useful to deliver.  In HTTP/3, that prefix is often an HTTP response header
-block, optionally followed by a short diagnostic response body, or a partial
-response received from an upstream host.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">WebTransport over HTTP/3 uses RESET_STREAM_AT to ensure that stream prefix
-information is delivered when a WebTransport stream is reset.  That use case
-motivated the QUIC extension, and many HTTP/3 implementations already support
-it for that reason.  This document records additional HTTP/3 use cases for the
-same mechanism.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
-<p id="section-abstract-3">This document describes HTTP/3 use cases for the RESET_STREAM_AT.  These include
-CONNECT tunnels, intermediary forwarding failures after a response has been
-committed, malformed decoded HTTP messages, and requests rejected before
-application processing.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+reset.  This is a problem for HTTP/3 when the correct protocol outcome is an
+abrupt stream termination, but the sender still has a bounded prefix worth
+delivering, such as response headers, a short diagnostic response body, or a
+partial response received from an upstream host.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">RESET_STREAM_AT provides reliable delivery of that prefix and is already used by
+WebTransport over HTTP/3 when resetting streams.  The same mechanism also fits
+HTTP/3 CONNECT tunnels, intermediary failures after response commitment,
+malformed decoded HTTP messages, and requests rejected before application
+processing.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-discussion-venues">
