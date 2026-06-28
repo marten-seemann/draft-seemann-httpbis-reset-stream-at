@@ -21,12 +21,11 @@ Abstract
    a short diagnostic response body, or a partial response received from
    an upstream host.
 
-   WebTransport over HTTP/3 uses RESET_STREAM_AT [RESET-STREAM-AT] to
-   ensure that stream prefix information is delivered when a
-   WebTransport stream is reset [WEBTRANS-HTTP3].  That use case
-   motivated the QUIC extension, and many HTTP/3 implementations already
-   support it for that reason.  This document records additional HTTP/3
-   use cases for the same mechanism.
+   WebTransport over HTTP/3 uses RESET_STREAM_AT to ensure that stream
+   prefix information is delivered when a WebTransport stream is reset.
+   That use case motivated the QUIC extension, and many HTTP/3
+   implementations already support it for that reason.  This document
+   records additional HTTP/3 use cases for the same mechanism.
 
    This document describes HTTP/3 use cases for the RESET_STREAM_AT.
    These include CONNECT tunnels, intermediary forwarding failures after
@@ -111,6 +110,10 @@ Table of Contents
    RESET_STREAM_AT addresses this by adding a Reliable Size to the
    reset.  The stream still terminates abruptly, but stream data up to
    the Reliable Size is delivered reliably.
+
+   WebTransport over HTTP/3 uses RESET_STREAM_AT [RESET-STREAM-AT] to
+   ensure that stream prefix information is delivered when a
+   WebTransport stream is reset [WEBTRANS-HTTP3].
 
    This document does not change HTTP/3 semantics.  It describes cases
    where existing HTTP/3 stream-error semantics can be combined with
