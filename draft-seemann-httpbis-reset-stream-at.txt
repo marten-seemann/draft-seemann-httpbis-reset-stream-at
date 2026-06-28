@@ -21,13 +21,12 @@ Abstract
    a short diagnostic response body, or a partial response received from
    an upstream host.
 
-   WebTransport over HTTP/3 uses RESET_STREAM_AT
-   [I-D.ietf-quic-reliable-stream-reset] to ensure that stream prefix
-   information is delivered when a WebTransport stream is reset
-   [I-D.ietf-webtrans-http3].  That use case motivated the QUIC
-   extension, and many HTTP/3 implementations already support it for
-   that reason.  This document records additional HTTP/3 use cases for
-   the same mechanism.
+   WebTransport over HTTP/3 uses RESET_STREAM_AT [RESET-STREAM-AT] to
+   ensure that stream prefix information is delivered when a
+   WebTransport stream is reset [WEBTRANS-HTTP3].  That use case
+   motivated the QUIC extension, and many HTTP/3 implementations already
+   support it for that reason.  This document records additional HTTP/3
+   use cases for the same mechanism.
 
    This document describes HTTP/3 use cases for the RESET_STREAM_AT.
    These include CONNECT tunnels, intermediary forwarding failures after
@@ -96,7 +95,7 @@ Table of Contents
 
 1.  Introduction
 
-   HTTP/3 uses QUIC streams to carry requests and responses [RFC9114].
+   HTTP/3 uses QUIC streams to carry requests and responses [HTTP3].
    Several HTTP/3 errors are signaled by abruptly terminating a stream
    with an HTTP/3 error code.  However, a QUIC stream reset does not
    ensure delivery of stream data sent before the reset.
@@ -130,11 +129,11 @@ Table of Contents
 
 3.1.  CONNECT Tunnels
 
-   The relay use case described in [I-D.ietf-quic-reliable-stream-reset]
-   directly applies to HTTP/3 CONNECT.  HTTP/3 CONNECT carries tunnel
-   data in DATA frames after a successful CONNECT response.  [RFC9114]
-   says that TCP connection errors, including TCP reset, are signaled as
-   stream errors of type H3_CONNECT_ERROR.
+   The relay use case described in [RESET-STREAM-AT] directly applies to
+   HTTP/3 CONNECT.  HTTP/3 CONNECT carries tunnel data in DATA frames
+   after a successful CONNECT response.  [HTTP3] says that TCP
+   connection errors, including TCP reset, are signaled as stream errors
+   of type H3_CONNECT_ERROR.
 
    A proxy might receive bytes from the upstream TCP connection and then
    observe an upstream reset.  With a plain stream reset, DATA frames
@@ -172,14 +171,14 @@ Table of Contents
    This use case applies after an HTTP/3 HEADERS frame has been parsed
    and QPACK decompression has succeeded.  It does not apply to invalid
    HTTP/3 frame syntax, invalid frame ordering, or QPACK decompression
-   failure.  [RFC9114] defines malformed HTTP messages to include
-   invalid pseudo-header fields, missing mandatory pseudo-header fields,
-   pseudo-header fields after regular fields, prohibited fields,
-   uppercase field names, invalid field names or values, and Content-
-   Length mismatches.  A detected malformed message is treated as a
-   stream error of type H3_MESSAGE_ERROR.  For a malformed request, a
-   server can send an HTTP response indicating the error before closing
-   or resetting the stream.
+   failure.  [HTTP3] defines malformed HTTP messages to include invalid
+   pseudo-header fields, missing mandatory pseudo-header fields, pseudo-
+   header fields after regular fields, prohibited fields, uppercase
+   field names, invalid field names or values, and Content-Length
+   mismatches.  A detected malformed message is treated as a stream
+   error of type H3_MESSAGE_ERROR.  For a malformed request, a server
+   can send an HTTP response indicating the error before closing or
+   resetting the stream.
 
    RESET_STREAM_AT allows that response to be delivered while preserving
    the H3_MESSAGE_ERROR signal.  The Reliable Size SHOULD be the end of
@@ -191,7 +190,7 @@ Table of Contents
 
 3.4.  Requests Rejected Before Application Processing
 
-   [RFC9114] defines H3_REQUEST_REJECTED for requests that a server
+   [HTTP3] defines H3_REQUEST_REJECTED for requests that a server
    rejects without performing application processing.  A client can
    treat such a request as though it had never been sent.
    H3_REQUEST_REJECTED is not used after partial or full application
@@ -221,7 +220,10 @@ Table of Contents
 
 6.1.  Normative References
 
-   [I-D.ietf-quic-reliable-stream-reset]
+   [HTTP3]    Bishop, M., Ed., "HTTP/3", RFC 9114, DOI 10.17487/RFC9114,
+              June 2022, <https://www.rfc-editor.org/rfc/rfc9114>.
+
+   [RESET-STREAM-AT]
               Seemann, M. and K. Oku, "QUIC Stream Resets with Partial
               Delivery", Work in Progress, Internet-Draft, draft-ietf-
               quic-reliable-stream-reset-08, 26 June 2026,
@@ -237,12 +239,9 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-   [RFC9114]  Bishop, M., Ed., "HTTP/3", RFC 9114, DOI 10.17487/RFC9114,
-              June 2022, <https://www.rfc-editor.org/rfc/rfc9114>.
-
 6.2.  Informative References
 
-   [I-D.ietf-webtrans-http3]
+   [WEBTRANS-HTTP3]
               Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
               over HTTP/3", Work in Progress, Internet-Draft, draft-
               ietf-webtrans-http3-15, 2 March 2026,
