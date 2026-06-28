@@ -43,30 +43,24 @@ processing.
 
 # Introduction
 
-HTTP/3 uses QUIC streams to carry requests and responses {{HTTP3}}. Several
-HTTP/3 errors are signaled by abruptly terminating a stream with an HTTP/3 error
-code.  However, a QUIC stream reset does not ensure delivery of stream data sent
-before the reset.
+HTTP/3 {{HTTP3}} uses QUIC streams to carry requests and responses.  Several
+HTTP/3 errors are signaled by abruptly terminating a stream with an error code,
+but a QUIC stream reset does not ensure delivery of data sent before the reset.
 
-This creates a gap when an endpoint has useful information to send, but the
-correct HTTP/3 signal is still a stream error.  A proxy can have received
-response bytes from an upstream connection before learning that the upstream
-connection failed.  A server can also decode a request field section, determine
-that the HTTP message is malformed, and generate a short diagnostic response
-before terminating the stream with H3_MESSAGE_ERROR.
+This matters when the sender has a useful bounded prefix, but the correct HTTP/3
+outcome is still a stream error.  Examples include a proxy that has received
+response bytes before an upstream failure, or a server that has decoded a
+malformed request and wants to send a short diagnostic response before using
+H3_MESSAGE_ERROR.
 
-RESET_STREAM_AT addresses this by adding a Reliable Size to the reset. The
-stream still terminates abruptly, but stream data up to the Reliable Size is
-delivered reliably.
+RESET_STREAM_AT {{RESET-STREAM-AT}} adds a Reliable Size to the reset, so stream
+data up to that point is delivered reliably while the stream still terminates
+abruptly.  WebTransport over HTTP/3 {{WEBTRANS-HTTP3}} already uses this
+extension to ensure delivery of the prefix that associates a WebTransport stream
+with its session.
 
-WebTransport over HTTP/3 uses RESET_STREAM_AT {{RESET-STREAM-AT}} to ensure
-that stream prefix information is delivered when a WebTransport stream is reset
-{{WEBTRANS-HTTP3}}.
-
-This document does not change HTTP/3 semantics.  It describes cases where
-existing HTTP/3 stream-error semantics can be combined with reliable delivery of
-a bounded stream prefix.  The Reliable Size SHOULD identify the end of a
-complete HTTP/3 frame.
+The following sections describe HTTP/3 cases where reliable prefix delivery is
+useful while retaining the existing stream-error signal.
 
 # Conventions and Definitions
 
