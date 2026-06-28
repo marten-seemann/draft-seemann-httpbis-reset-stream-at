@@ -18,8 +18,11 @@ author:
     email: martenseemann@gmail.com
 
 normative:
+  RESET-STREAM-AT: I-D.ietf-quic-reliable-stream-reset
+  HTTP3: RFC9114
 
 informative:
+  WEBTRANS-HTTP3: I-D.ietf-webtrans-http3
 
 --- abstract
 
@@ -30,12 +33,11 @@ useful to deliver.  In HTTP/3, that prefix is often an HTTP response header
 block, optionally followed by a short diagnostic response body, or a partial
 response received from an upstream host.
 
-WebTransport over HTTP/3 uses RESET_STREAM_AT
-{{!I-D.ietf-quic-reliable-stream-reset}} to ensure that stream prefix
-information is delivered when a WebTransport stream is reset
-{{?I-D.ietf-webtrans-http3}}.  That use case motivated the QUIC extension, and
-many HTTP/3 implementations already support it for that reason.  This document
-records additional HTTP/3 use cases for the same mechanism.
+WebTransport over HTTP/3 uses RESET_STREAM_AT to ensure that stream prefix
+information is delivered when a WebTransport stream is reset.  That use case
+motivated the QUIC extension, and many HTTP/3 implementations already support
+it for that reason.  This document records additional HTTP/3 use cases for the
+same mechanism.
 
 This document describes HTTP/3 use cases for the RESET_STREAM_AT.  These include
 CONNECT tunnels, intermediary forwarding failures after a response has been
@@ -47,7 +49,7 @@ application processing.
 
 # Introduction
 
-HTTP/3 uses QUIC streams to carry requests and responses {{!RFC9114}}. Several
+HTTP/3 uses QUIC streams to carry requests and responses {{HTTP3}}. Several
 HTTP/3 errors are signaled by abruptly terminating a stream with an HTTP/3 error
 code.  However, a QUIC stream reset does not ensure delivery of stream data sent
 before the reset.
@@ -63,6 +65,10 @@ RESET_STREAM_AT addresses this by adding a Reliable Size to the reset. The
 stream still terminates abruptly, but stream data up to the Reliable Size is
 delivered reliably.
 
+WebTransport over HTTP/3 uses RESET_STREAM_AT {{RESET-STREAM-AT}} to ensure
+that stream prefix information is delivered when a WebTransport stream is reset
+{{WEBTRANS-HTTP3}}.
+
 This document does not change HTTP/3 semantics.  It describes cases where
 existing HTTP/3 stream-error semantics can be combined with reliable delivery of
 a bounded stream prefix.  The Reliable Size SHOULD identify the end of a
@@ -76,11 +82,10 @@ complete HTTP/3 frame.
 
 ## CONNECT Tunnels
 
-The relay use case described in {{!I-D.ietf-quic-reliable-stream-reset}}
-directly applies to HTTP/3 CONNECT.  HTTP/3 CONNECT carries tunnel data in DATA
-frames after a successful CONNECT response.  {{!RFC9114}} says that TCP
-connection errors, including TCP reset, are signaled as stream errors of type
-H3_CONNECT_ERROR.
+The relay use case described in {{RESET-STREAM-AT}} directly applies to HTTP/3
+CONNECT.  HTTP/3 CONNECT carries tunnel data in DATA frames after a successful
+CONNECT response.  {{HTTP3}} says that TCP connection errors, including TCP
+reset, are signaled as stream errors of type H3_CONNECT_ERROR.
 
 A proxy might receive bytes from the upstream TCP connection and then observe an
 upstream reset.  With a plain stream reset, DATA frames containing those
@@ -114,7 +119,7 @@ consume meaningful prefixes of streaming responses.
 
 This use case applies after an HTTP/3 HEADERS frame has been parsed and QPACK
 decompression has succeeded.  It does not apply to invalid HTTP/3 frame syntax,
-invalid frame ordering, or QPACK decompression failure. {{!RFC9114}} defines
+invalid frame ordering, or QPACK decompression failure. {{HTTP3}} defines
 malformed HTTP messages to include invalid pseudo-header fields, missing
 mandatory pseudo-header fields, pseudo-header fields after regular fields,
 prohibited fields, uppercase field names, invalid field names or values, and
@@ -132,10 +137,10 @@ more information than a stream reset error code alone.
 
 ## Requests Rejected Before Application Processing
 
-{{!RFC9114}} defines H3_REQUEST_REJECTED for requests that a server rejects
-without performing application processing.  A client can treat such a request as
-though it had never been sent.  H3_REQUEST_REJECTED is not used after partial or
-full application processing.
+{{HTTP3}} defines H3_REQUEST_REJECTED for requests that a server rejects without
+performing application processing.  A client can treat such a request as though
+it had never been sent.  H3_REQUEST_REJECTED is not used after partial or full
+application processing.
 
 A server might want to preserve this retry signal while also providing a small
 diagnostic response.  For example, a server that is draining, overloaded, or
