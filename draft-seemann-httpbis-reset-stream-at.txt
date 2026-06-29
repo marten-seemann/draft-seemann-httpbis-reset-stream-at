@@ -162,22 +162,18 @@ Table of Contents
    This use case applies after an HTTP/3 HEADERS frame has been parsed
    and QPACK decompression has succeeded.  It does not apply to invalid
    HTTP/3 frame syntax, invalid frame ordering, or QPACK decompression
-   failure.  [HTTP3] defines malformed HTTP messages to include invalid
-   pseudo-header fields, missing mandatory pseudo-header fields, pseudo-
-   header fields after regular fields, prohibited fields, uppercase
-   field names, invalid field names or values, and Content-Length
-   mismatches.  A detected malformed message is treated as a stream
-   error of type H3_MESSAGE_ERROR.  For a malformed request, a server
-   can send an HTTP response indicating the error before closing or
-   resetting the stream.
+   failure.  Examples of malformed HTTP messages under [HTTP3] include
+   invalid pseudo-header fields and uppercase field names.  A detected
+   malformed message is treated as a stream error of type
+   H3_MESSAGE_ERROR.
 
-   RESET_STREAM_AT allows that response to be delivered while preserving
-   the H3_MESSAGE_ERROR signal.  The Reliable Size SHOULD be the end of
-   the diagnostic response header block, or the end of that header block
-   plus a short diagnostic response body.
+   RESET_STREAM_AT allows a diagnostic HTTP response to be delivered
+   while preserving the H3_MESSAGE_ERROR signal.  The Reliable Size
+   SHOULD be the end of the diagnostic response header block, or the end
+   of that header block plus a short diagnostic response body.
 
-   This can help debug faulty client implementations, since the response
-   can carry more information than a stream reset error code alone.
+   The additional information can be valuable when debugging faulty or
+   non-conforming clients.
 
 3.4.  Requests Rejected Before Application Processing
 

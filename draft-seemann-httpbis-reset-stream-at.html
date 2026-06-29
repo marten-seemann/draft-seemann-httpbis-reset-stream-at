@@ -1290,19 +1290,16 @@ partial streaming response before an error.<a href="#section-3.2-3" class="pilcr
         </h3>
 <p id="section-3.3-1">This use case applies after an HTTP/3 HEADERS frame has been parsed and QPACK
 decompression has succeeded.  It does not apply to invalid HTTP/3 frame syntax,
-invalid frame ordering, or QPACK decompression failure. <span>[<a href="#HTTP3" class="cite xref">HTTP3</a>]</span> defines
-malformed HTTP messages to include invalid pseudo-header fields, missing
-mandatory pseudo-header fields, pseudo-header fields after regular fields,
-prohibited fields, uppercase field names, invalid field names or values, and
-Content-Length mismatches.  A detected malformed message is treated as a stream
-error of type H3_MESSAGE_ERROR.  For a malformed request, a server can send an
-HTTP response indicating the error before closing or resetting the stream.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
-<p id="section-3.3-2">RESET_STREAM_AT allows that response to be delivered while preserving the
-H3_MESSAGE_ERROR signal.  The Reliable Size <span class="bcp14">SHOULD</span> be the end of the diagnostic
-response header block, or the end of that header block plus a short diagnostic
-response body.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
-<p id="section-3.3-3">This can help debug faulty client implementations, since the response can carry
-more information than a stream reset error code alone.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+invalid frame ordering, or QPACK decompression failure.  Examples of malformed
+HTTP messages under <span>[<a href="#HTTP3" class="cite xref">HTTP3</a>]</span> include invalid pseudo-header fields and uppercase
+field names.  A detected malformed message is treated as a stream error of type
+H3_MESSAGE_ERROR.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2">RESET_STREAM_AT allows a diagnostic HTTP response to be delivered while
+preserving the H3_MESSAGE_ERROR signal.  The Reliable Size <span class="bcp14">SHOULD</span> be the end of
+the diagnostic response header block, or the end of that header block plus a
+short diagnostic response body.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.3-3">The additional information can be valuable when debugging faulty or
+non-conforming clients.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="requests-rejected-before-application-processing">
