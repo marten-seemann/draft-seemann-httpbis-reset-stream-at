@@ -1056,7 +1056,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Seemann</td>
-<td class="center">Expires 30 December 2026</td>
+<td class="center">Expires 31 December 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg {
 <dd class="internet-draft">draft-seemann-httpbis-reset-stream-at-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-28" class="published">28 June 2026</time>
+<time datetime="2026-06-29" class="published">29 June 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-30">30 December 2026</time></dd>
+<dd class="expires"><time datetime="2026-12-31">31 December 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1127,7 +1127,7 @@ processing.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 30 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 31 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1267,19 +1267,20 @@ DATA frame carrying tunnel bytes from the upstream connection.<a href="#section-
         <h3 id="name-intermediaries-after-respon">
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-intermediaries-after-respon" class="section-name selfRef">Intermediaries After Response Commitment</a>
         </h3>
-<p id="section-3.2-1">An intermediary can usually translate an upstream failure into a new HTTP
-response if it has not yet sent response headers downstream.  For example, it
-can generate a 502 response.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2">Once response headers have been forwarded, that option is no longer available.
-If the intermediary later detects an upstream stream error, a malformed upstream
-response, or another stream-local failure, it cannot replace the response with a
-new status code.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.2-3">RESET_STREAM_AT allows the intermediary to preserve the response prefix that it
-already committed while still terminating the stream with an appropriate HTTP/3
-error code.  The Reliable Size <span class="bcp14">SHOULD</span> be the end of the last complete HTTP/3
-frame that the intermediary committed to forwarding downstream.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
-<p id="section-3.2-4">This use case is mostly diagnostic, but it can also be useful for clients that
-consume meaningful prefixes of streaming responses.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
+<p id="section-3.2-1">An intermediary can translate an upstream failure into a new HTTP response only
+before it sends response headers downstream.  After that, it cannot replace the
+response with a new status code.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">If the intermediary later detects an upstream stream error, a malformed
+upstream response, or another stream-local failure, RESET_STREAM_AT allows it to
+terminate the stream with an appropriate HTTP/3 error code while making
+reliable only the response portion it can safely identify.  That portion always
+includes the committed response HEADERS frame, and can include later response
+data when the intermediary understands enough of the application protocol to
+choose a useful boundary.  The Reliable Size <span class="bcp14">SHOULD</span> therefore be the end of the
+response HEADERS frame, or the end of a later complete HTTP/3 frame forwarded
+downstream.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-3">This is mainly useful for diagnostics, logging, and clients that can consume a
+partial streaming response before an error.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="malformed-decoded-http-messages">

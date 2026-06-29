@@ -3,9 +3,9 @@
 
 
 HTTP                                                          M. Seemann
-Internet-Draft                                              28 June 2026
+Internet-Draft                                              29 June 2026
 Intended status: Informational                                          
-Expires: 30 December 2026
+Expires: 31 December 2026
 
 
         Using QUIC Stream Resets with Partial Delivery in HTTP/3
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 December 2026.
+   This Internet-Draft will expire on 31 December 2026.
 
 Copyright Notice
 
@@ -139,23 +139,23 @@ Table of Contents
 
 3.2.  Intermediaries After Response Commitment
 
-   An intermediary can usually translate an upstream failure into a new
-   HTTP response if it has not yet sent response headers downstream.
-   For example, it can generate a 502 response.
+   An intermediary can translate an upstream failure into a new HTTP
+   response only before it sends response headers downstream.  After
+   that, it cannot replace the response with a new status code.
 
-   Once response headers have been forwarded, that option is no longer
-   available.  If the intermediary later detects an upstream stream
-   error, a malformed upstream response, or another stream-local
-   failure, it cannot replace the response with a new status code.
+   If the intermediary later detects an upstream stream error, a
+   malformed upstream response, or another stream-local failure,
+   RESET_STREAM_AT allows it to terminate the stream with an appropriate
+   HTTP/3 error code while making reliable only the response portion it
+   can safely identify.  That portion always includes the committed
+   response HEADERS frame, and can include later response data when the
+   intermediary understands enough of the application protocol to choose
+   a useful boundary.  The Reliable Size SHOULD therefore be the end of
+   the response HEADERS frame, or the end of a later complete HTTP/3
+   frame forwarded downstream.
 
-   RESET_STREAM_AT allows the intermediary to preserve the response
-   prefix that it already committed while still terminating the stream
-   with an appropriate HTTP/3 error code.  The Reliable Size SHOULD be
-   the end of the last complete HTTP/3 frame that the intermediary
-   committed to forwarding downstream.
-
-   This use case is mostly diagnostic, but it can also be useful for
-   clients that consume meaningful prefixes of streaming responses.
+   This is mainly useful for diagnostics, logging, and clients that can
+   consume a partial streaming response before an error.
 
 3.3.  Malformed Decoded HTTP Messages
 
