@@ -86,22 +86,22 @@ DATA frame carrying tunnel bytes from the upstream connection.
 
 ## Intermediaries After Response Commitment
 
-An intermediary can usually translate an upstream failure into a new HTTP
-response if it has not yet sent response headers downstream.  For example, it
-can generate a 502 response.
+An intermediary can translate an upstream failure into a new HTTP response only
+before it sends response headers downstream.  After that, it cannot replace the
+response with a new status code.
 
-Once response headers have been forwarded, that option is no longer available.
-If the intermediary later detects an upstream stream error, a malformed upstream
-response, or another stream-local failure, it cannot replace the response with a
-new status code.
+If the intermediary later detects an upstream stream error, a malformed
+upstream response, or another stream-local failure, RESET_STREAM_AT allows it to
+terminate the stream with an appropriate HTTP/3 error code while making
+reliable only the response portion it can safely identify.  That portion always
+includes the committed response HEADERS frame, and can include later response
+data when the intermediary understands enough of the application protocol to
+choose a useful boundary.  The Reliable Size SHOULD therefore be the end of the
+response HEADERS frame, or the end of a later complete HTTP/3 frame forwarded
+downstream.
 
-RESET_STREAM_AT allows the intermediary to preserve the response prefix that it
-already committed while still terminating the stream with an appropriate HTTP/3
-error code.  The Reliable Size SHOULD be the end of the last complete HTTP/3
-frame that the intermediary committed to forwarding downstream.
-
-This use case is mostly diagnostic, but it can also be useful for clients that
-consume meaningful prefixes of streaming responses.
+This is mainly useful for diagnostics, logging, and clients that can consume a
+partial streaming response before an error.
 
 ## Malformed Decoded HTTP Messages
 
