@@ -1296,8 +1296,8 @@ field names.  A detected malformed message is treated as a stream error of type
 H3_MESSAGE_ERROR.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3-2">RESET_STREAM_AT allows a diagnostic HTTP response to be delivered while
 preserving the H3_MESSAGE_ERROR signal.  The Reliable Size <span class="bcp14">SHOULD</span> be the end of
-the diagnostic response header block, or the end of that header block plus a
-short diagnostic response body.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+the diagnostic response HEADERS frame, or the end of a later complete DATA frame
+carrying a short diagnostic response body.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
 <p id="section-3.3-3">The additional information can be valuable when debugging faulty or
 non-conforming clients.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 </section>
@@ -1316,10 +1316,10 @@ diagnostic response.  For example, a server that is draining, overloaded, or
 unable to route a request might send a 503 or 429 response with retry
 information, then terminate the stream with H3_REQUEST_REJECTED.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
 <p id="section-3.4-3">With RESET_STREAM_AT, the Reliable Size <span class="bcp14">SHOULD</span> be the end of the diagnostic
-response header block, or the end of that header block plus a short diagnostic
-response body. This is mainly useful for HTTP/3-aware clients and debugging
-tools.  A generic HTTP client API might not expose both the HTTP response and
-the stream error.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+response HEADERS frame, or the end of a later complete DATA frame carrying a
+short diagnostic response body.  This is mainly useful for HTTP/3-aware clients
+and debugging tools.  A generic HTTP client API might not expose both the HTTP
+response and the stream error.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
