@@ -114,8 +114,8 @@ H3_MESSAGE_ERROR.
 
 RESET_STREAM_AT allows a diagnostic HTTP response to be delivered while
 preserving the H3_MESSAGE_ERROR signal.  The Reliable Size SHOULD be the end of
-the diagnostic response header block, or the end of that header block plus a
-short diagnostic response body.
+the diagnostic response HEADERS frame, or the end of a later complete DATA frame
+carrying a short diagnostic response body.
 
 The additional information can be valuable when debugging faulty or
 non-conforming clients.
@@ -133,10 +133,10 @@ unable to route a request might send a 503 or 429 response with retry
 information, then terminate the stream with H3_REQUEST_REJECTED.
 
 With RESET_STREAM_AT, the Reliable Size SHOULD be the end of the diagnostic
-response header block, or the end of that header block plus a short diagnostic
-response body. This is mainly useful for HTTP/3-aware clients and debugging
-tools.  A generic HTTP client API might not expose both the HTTP response and
-the stream error.
+response HEADERS frame, or the end of a later complete DATA frame carrying a
+short diagnostic response body.  This is mainly useful for HTTP/3-aware clients
+and debugging tools.  A generic HTTP client API might not expose both the HTTP
+response and the stream error.
 
 
 # Security Considerations
